@@ -93,20 +93,6 @@
     <div id="log" class="log"></div>
   </section>
 
-  <script>
-    // Basic console logger helper for the demo UI
-    function log(...args) {
-      const el = document.getElementById('log');
-      el.textContent += args.map(a => {
-        try { return typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a); }
-        catch (e) { return String(a); }
-      }).join(' ') + '\\n\\n';
-      el.scrollTop = el.scrollHeight;
-    }
-
-    // Load Facebook JS SDK asynchronously
-    (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "https://connect.facebook.net/en
+</body>
+</html>
+    
