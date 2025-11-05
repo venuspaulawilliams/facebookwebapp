@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>XFBML + Facebook JS SDK Controls Demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin: 18px; }
+    header { margin-bottom: 16px; }
+    section.controls { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .card { border: 1px solid #ddd; padding: 12px; border-radius: 6px; background:#fafafa; }
+    .log { white-space: pre-wrap; background:#111; color:#bada55; padding:8px; height:160px; overflow:auto; font-family: monospace; }
+    button { margin-top:8px; }
+  </style>
+</head>
+<body>
+  <div id="fb-root"></div>
+
+  <header>
+    <h1>XFBML + Facebook API Controls Demo</h1>
+    <p>Replace <strong>YOUR_APP_ID</strong> with your Facebook App ID and serve this page over HTTPS and from an allowed App Domain.</p>
+  </header>
+
+  <section class="controls">
+    <div class="card">
+      <h2>Authentication & Status</h2>
+      <!-- Legacy XFBML tag (still parsed by the JS SDK) -->
+      <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
+
+      <!-- Modern XFBML-like element (also parsed by the SDK) -->
+      <div class="fb-login-button" data-size="large" data-button-type="login_with" data-scope="public_profile,email" data-onlogin="checkLoginState();"></div>
+
+      <p>
+        <button id="btn-check-status">Check Login Status (FB.getLoginStatus)</button>
+        <button id="btn-logout">Logout (FB.logout)</button>
+      </p>
+
+      <h3>Basic API Calls</h3>
+      <p>
+        <button id="btn-me">Call /me (FB.api)</button>
+        <button id="btn-friends">Call /me/friends (FB.api)</button>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Social Plugins / XFBML Controls</h2>
+
+      <p>Like button</p>
+      <div class="fb-like" data-href="https://www.example.com" data-width="" data-layout="standard" data-action="like" data-size="small" data-share="false"></div>
+
+      <p>Share button</p>
+      <div class="fb-share-button" data-href="https://www.example.com" data-layout="button_count"></div>
+
+      <p>Send button</p>
+      <div class="fb-send" data-href="https://www.example.com"></div>
+
+      <p>Comments</p>
+      <div class="fb-comments" data-href="https://www.example.com" data-numposts="5" data-width=""></div>
+
+      <p>Facepile</p>
+      <div class="fb-facepile" data-href="https://www.example.com" data-width="300" data-max-rows="1" data-size="medium"></div>
+
+      <p>Activity feed</p>
+      <div class="fb-activity" data-site="example.com" data-width="300" data-height="200" data-header="true"></div>
+    </div>
+
+    <div class="card">
+      <h2>Dialog Examples (FB.ui)</h2>
+      <p>
+        <button id="btn-share-ui">Share Dialog (FB.ui)</button>
+        <button id="btn-send-ui">Send Dialog (FB.ui)</button>
+      </p>
+
+      <h3>Feed / Publish (requires appropriate permissions)</h3>
+      <p><button id="btn-post-feed">Post to Feed (Graph API)</button></p>
+      <small>Note: publishing from client-side may require extra permissions that Facebook may restrict.</small>
+    </div>
+
+    <div class="card">
+      <h2>Other Controls & Counts</h2>
+
+      <p>Comments Count (XFBML-count)</p>
+      <span class="fb-comments-count" data-href="https://www.example.com">0</span> comments
+
+      <h3>Manual API & Token</h3>
+      <p>Access token (short-lived) is printed below when you login.</p>
+      <div id="token" style="word-break:break-all; font-size:12px; color:#333; margin-top:6px;"></div>
+    </div>
+  </section>
+
+  <section style="margin-top:18px;">
+    <h2>Log / Response</h2>
+    <div id="log" class="log"></div>
+  </section>
+
+  <script>
+    // Basic console logger helper for the demo UI
+    function log(...args) {
+      const el = document.getElementById('log');
+      el.textContent += args.map(a => {
+        try { return typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a); }
+        catch (e) { return String(a); }
+      }).join(' ') + '\\n\\n';
+      el.scrollTop = el.scrollHeight;
+    }
+
+    // Load Facebook JS SDK asynchronously
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en
